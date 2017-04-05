@@ -133,7 +133,7 @@ export default class BodyController {
   }
 
   rowsUpdated(newVal, oldVal) {
-    if (!newVal) {
+    if (!newVal && oldVal) {
       this.getRows(true);
     } else {
       if (this.options.paging.mode !== 'external') {
@@ -163,11 +163,10 @@ export default class BodyController {
         if (this.options.paging.mode === 'external') {
           // We're using external paging
           const idxs = this.getFirstLastIndexes();
-          let idx = idxs.first;
 
           this.tempRows.splice(0, this.tempRows.length);
-          while (idx < idxs.last) {
-            this.tempRows.push(rows[idx += 1]);
+          for (let idx = idxs.first; idx < idxs.last; idx++){
+            this.tempRows.push(rows[idx]);
           }
         } else if (this.options.paging.mode === 'internal') {
           // We're using internal paging
@@ -456,7 +455,7 @@ export default class BodyController {
     // slice out the old rows so we don't have duplicates
     this.tempRows.splice(0, indexes.last - indexes.first);
 
-    while (rowIndex < indexes.last && rowIndex < this.count) {
+    while (temp && rowIndex < indexes.last && rowIndex < this.count) {
       const row = temp[rowIndex];
 
       if (row) {
@@ -534,6 +533,12 @@ export default class BodyController {
       'dt-row-even': row && row.$$index % 2 === 0,
       'dt-row-odd': row && row.$$index % 2 !== 0,
     };
+
+    if (row && row.style) {
+      row.style.split(" ").forEach(style => {
+        styles[style] = Boolean(row);
+      });
+    }
 
     if (this.treeColumn) {
       // if i am a child
