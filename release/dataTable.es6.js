@@ -1161,37 +1161,6 @@ class DataTableController {
  * @param  {boolean}
  * @param  {object}
  */
-function throttle(func, wait, options) {
-  return (...args) => {
-    const localOptions = options || (options = {});
-
-    let result;
-    let timeout = null;
-    let previous = 0;
-
-    const later = () => {
-      previous = localOptions.leading === false ? 0 : new Date();
-      timeout = null;
-      result = func.apply(this, args);
-    };
-
-    const now = new Date();
-    if (!previous && localOptions.leading === false) {
-      previous = now;
-    }
-    const remaining = wait - (now - previous);
-
-    if (remaining <= 0) {
-      clearTimeout(timeout);
-      timeout = null;
-      previous = now;
-      result = func.apply(this, args);
-    } else if (!timeout && localOptions.trailing !== false) {
-      timeout = setTimeout(later, remaining);
-    }
-    return result;
-  };
-}
 
 var DataTableService = {
 
@@ -1373,9 +1342,14 @@ function DataTableDirective($window, $timeout, $parse) {
           }
 
           function calculateResize() {
-            throttle(() => {
-              $timeout(resize);
-            });
+            // DataTableThrottle(() => {
+            //   $timeout(resize);
+            // });
+            let debouncer = null;
+            if (debouncer) {
+              $timeout.cancel(debouncer);
+            }
+            debouncer = $timeout(resize, 150);
           }
 
           $window.addEventListener('resize', calculateResize);
@@ -1978,7 +1952,7 @@ class BodyController {
   }
 
   rowsUpdated(newVal, oldVal) {
-    if (!newVal && oldVal) {
+    if (!newVal) {
       this.getRows(true);
     } else {
       if (this.options.paging.mode !== 'external') {

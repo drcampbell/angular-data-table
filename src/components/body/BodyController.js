@@ -133,7 +133,7 @@ export default class BodyController {
   }
 
   rowsUpdated(newVal, oldVal) {
-    if (!newVal && oldVal) {
+    if (!newVal) {
       this.getRows(true);
     } else {
       if (this.options.paging.mode !== 'external') {

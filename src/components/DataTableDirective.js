@@ -105,9 +105,14 @@ export default function DataTableDirective($window, $timeout, $parse) {
           }
 
           function calculateResize() {
-            throttle(() => {
-              $timeout(resize);
-            });
+            // DataTableThrottle(() => {
+            //   $timeout(resize);
+            // });
+            let debouncer = null;
+            if (debouncer) {
+              $timeout.cancel(debouncer);
+            }
+            debouncer = $timeout(resize, 150);
           }
 
           $window.addEventListener('resize', calculateResize);
