@@ -10,7 +10,7 @@ const hasCSS3DTransforms = !!GetVendorPrefixedName('perspective');
 const isSafari = (/Safari\//).test(ua) && !(/Chrome\//).test(ua);
 
 export default function TranslateXY(styles, x, y) {
-  if (hasCSSTransforms) {
+  if (hasCSSTransforms && false) {
     if (!isSafari && hasCSS3DTransforms) {
       styles[transform] = `translate3d(${x}px, ${y}px, 0)`;
       styles[backfaceVisibility] = 'hidden';
