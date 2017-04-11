@@ -31,7 +31,7 @@ export default class RowController {
    */
   stylesByGroup(group) {
     const styles = {
-      width: `${this.columnWidths[group]}px`,
+      width: "auto", //`${this.columnWidths[group]}px`,
     };
 
     if (group === 'left') {
